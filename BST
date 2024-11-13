@@ -1,0 +1,179 @@
+class BSTNode<T extends Comparable<T>> {
+    T data;
+    BSTNode<T> left, right;
+
+    public BSTNode(T data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+public class BStree<T extends Comparable<T>> {
+    private BSTNode<T> root;
+    private int count; 
+    private BSTNode<T> curr; 
+    public BStree() {
+        this.root = null;
+        this.count = 0;
+        this.curr = null;
+    }
+
+    public boolean isEmpty() {
+        return root == null;
+    }
+
+    public boolean search(T key) {
+        curr = search(root, key);
+        return curr != null;
+    }
+
+    private BSTNode<T> search(BSTNode<T> node, T key) {
+        if (node == null) {
+            return null;
+        }
+        if (key.compareTo(node.data) < 0) {
+            return search(node.left, key);
+        } else if (key.compareTo(node.data) > 0) {
+            return search(node.right, key);
+        } else {
+            return node;
+        }
+    }
+
+    public void insert(T data) {
+        root = insert(root, data);
+    }
+
+    private BSTNode<T> insert(BSTNode<T> node, T data) {
+        if (node == null) {
+            count++; 
+            return new BSTNode<>(data);
+        }
+        if (data.compareTo(node.data) < 0) {
+            node.left = insert(node.left, data);
+        } else if (data.compareTo(node.data) > 0) {
+            node.right = insert(node.right, data);
+        }
+        return node;
+    }
+
+    public void delete(T data) {
+        root = delete(root, data);
+    }
+
+    private BSTNode<T> delete(BSTNode<T> node, T data) {
+        if (node == null) {
+            return null;
+        }
+
+        if (data.compareTo(node.data) < 0) {
+            node.left = delete(node.left, data);
+        } else if (data.compareTo(node.data) > 0) {
+            node.right = delete(node.right, data);
+        } else {
+            if (node.left == null) {
+                count--; 
+                return node.right;
+            } else if (node.right == null) {
+                count--;
+                return node.left;
+            }
+
+            node.data = minValue(node.right);
+            node.right = delete(node.right, node.data);
+            count--;         }
+        return node;
+    }
+
+    private T minValue(BSTNode<T> node) {
+        T minVal = node.data;
+        while (node.left != null) {
+            minVal = node.left.data;
+            node = node.left;
+        }
+        return minVal;
+    }
+
+    public T retrieve() {
+        return (curr != null) ? curr.data : null;
+    }
+
+    public void update(T data) {
+        if (curr != null) {
+            curr.data = data;
+        }
+    }
+
+    public int size() {
+        return count;
+    }
+
+    public void clear() {
+        root = null;
+        curr = null;
+        count = 0;
+    }
+
+    public void inorderTraversal() {
+        inorderTraversal(root);
+        System.out.println();
+    }
+
+    private void inorderTraversal(BSTNode<T> node) {
+        if (node != null) {
+            inorderTraversal(node.left);
+            System.out.print(node.data + " ");
+            inorderTraversal(node.right);
+        }
+    }
+
+    public void preorderTraversal() {
+        preorderTraversal(root);
+        System.out.println();
+    }
+
+    private void preorderTraversal(BSTNode<T> node) {
+        if (node != null) {
+            System.out.print(node.data + " ");
+            preorderTraversal(node.left);
+            preorderTraversal(node.right);
+        }
+    }
+
+    public void postorderTraversal() {
+    postorderTraversal(root);
+        System.out.println();
+    }
+
+    private void postorderTraversal(BSTNode<T> node) {
+        if (node != null) {
+            postorderTraversal(node.left);
+            postorderTraversal(node.right);
+            System.out.print(node.data + " ");
+        }
+    }
+
+    public T findMin() {
+        if (isEmpty()) {
+            throw new IllegalStateException("The BST is empty.");
+        }
+        return minValue(root);
+    }
+
+    public T findMax() {
+        if (isEmpty()) {
+            throw new IllegalStateException("The BST is empty.");
+        }
+        return maxValue(root);
+    }
+
+    private T maxValue(BSTNode<T> node) {
+        T maxVal = node.data;
+        while (node.right != null) {
+            maxVal = node.right.data;
+            node = node.right;
+        }
+        return maxVal;
+    }
+}
